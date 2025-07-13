@@ -30,21 +30,31 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
   };
 
   const updateExperience = (id: string, field: keyof Experience, value: any) => {
-    onChange(experience.map(exp => 
-      exp.id === id ? { ...exp, [field]: value } : exp
-    ));
+    onChange(experience.map(exp => {
+      if (exp.id === id) {
+        // Create a deep copy to avoid reference sharing
+        if (field === 'description' && Array.isArray(value)) {
+          return { ...exp, [field]: [...value] };
+        }
+        return { ...exp, [field]: value };
+      }
+      return exp;
+    }));
   };
 
   const addDescription = (id: string) => {
     const exp = experience.find(e => e.id === id);
     if (exp) {
-      updateExperience(id, 'description', [...exp.description, '']);
+      // Create a completely new array to avoid reference sharing
+      const newDescription = [...exp.description, ''];
+      updateExperience(id, 'description', newDescription);
     }
   };
 
   const removeDescription = (id: string, index: number) => {
     const exp = experience.find(e => e.id === id);
     if (exp && exp.description.length > 1) {
+      // Create a new array without the specified index
       const newDescription = exp.description.filter((_, i) => i !== index);
       updateExperience(id, 'description', newDescription);
     }
@@ -53,8 +63,10 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
   const updateDescription = (id: string, index: number, value: string) => {
     const exp = experience.find(e => e.id === id);
     if (exp) {
-      const newDescription = [...exp.description];
-      newDescription[index] = value;
+      // Create a completely new array with the updated value
+      const newDescription = exp.description.map((desc, i) => 
+        i === index ? value : desc
+      );
       updateExperience(id, 'description', newDescription);
     }
   };
@@ -160,6 +172,8 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
                   onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="December 2023"
+                  maxLength={100}
+                  // maxLength={200}
                 />
               </div>
             )}
@@ -178,16 +192,16 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
                 <span>Add Point</span>
               </button>
             </div>
-            {exp.description.map((desc, index) => (
-              <div key={index} className="flex items-start space-x-2 mb-2">
+            {(exp.description || []).map((desc, index) => (
+              <div key={`${exp.id}-desc-${index}`} className="flex items-start space-x-2 mb-2">
                 <textarea
-                  value={desc}
+                  value={desc || ''}
                   onChange={(e) => updateDescription(exp.id, index, e.target.value)}
                   className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={2}
                   placeholder="Describe your responsibilities and achievements..."
                 />
-                {exp.description.length > 1 && (
+                {(exp.description || []).length > 1 && (
                   <button
                     onClick={() => removeDescription(exp.id, index)}
                     className="text-red-500 hover:text-red-700 transition-colors mt-2"

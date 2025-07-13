@@ -3,6 +3,15 @@ import { ResumeData } from '../types/Resume';
 
 export const exportToPDF = async (resumeData: ResumeData, filename: string = 'resume.pdf') => {
   try {
+    // Validate input data
+    if (!resumeData || !resumeData.personalInfo) {
+      throw new Error('Invalid resume data provided');
+    }
+
+    if (!filename || filename.trim() === '') {
+      filename = 'resume.pdf';
+    }
+
     // Create PDF with A4 dimensions
     const pdf = new jsPDF({
       orientation: 'portrait',
@@ -37,7 +46,9 @@ export const exportToPDF = async (resumeData: ResumeData, filename: string = 're
       if (currentY + neededSpace > pageHeight - margin) {
         pdf.addPage();
         currentY = margin;
+        return true;
       }
+      return false;
     };
 
     const wrapText = (text: string, maxWidth: number, fontSize: number = 11) => {
@@ -61,6 +72,11 @@ export const exportToPDF = async (resumeData: ResumeData, filename: string = 're
     // Combine contact info
     const contactItems = [personalInfo.email, personalInfo.phone, personalInfo.address].filter(Boolean);
     
+    // Validate required personal info
+    if (!personalInfo.fullName?.trim()) {
+      throw new Error('Full name is required for PDF export');
+    }
+
     // Format links with icons instead of text labels
     const linkItems = [];
     const linkMeta = []; // store positions for linking
@@ -120,13 +136,17 @@ export const exportToPDF = async (resumeData: ResumeData, filename: string = 're
       currentY += sectionSpacing;
 
       resumeData.education.forEach((edu) => {
+        if (!edu.school?.trim() || !edu.degree?.trim()) {
+          return; // Skip incomplete education entries
+        }
+
         checkPageBreak(25);
         
         // University name in bold, then degree and GPA in normal
         addText(edu.school, margin, currentY, 11, 'bold');
         const schoolWidth = pdf.getTextWidth(edu.school);
         
-        let degreeText = `, ${edu.degree}`;
+        const degreeText = `, ${edu.degree}`;
         const degreeWidth = pdf.getTextWidth(edu.degree);
         let gpa = '';
         if (edu.gpa) {
@@ -160,6 +180,10 @@ export const exportToPDF = async (resumeData: ResumeData, filename: string = 're
       currentY += sectionSpacing;
 
       resumeData.skills.forEach((skill) => {
+        if (!skill.category?.trim() || !skill.items?.length) {
+          return; // Skip incomplete skill entries
+        }
+
         checkPageBreak(10);
         const categoryText = `${skill.category}:`;
         const skillsText = ` ${skill.items.join(', ')}`;
@@ -198,6 +222,10 @@ export const exportToPDF = async (resumeData: ResumeData, filename: string = 're
       currentY += sectionSpacing;
 
       resumeData.experience.forEach((exp) => {
+        if (!exp.title?.trim() || !exp.company?.trim()) {
+          return; // Skip incomplete experience entries
+        }
+
         checkPageBreak(30);
         
         // Role in bold, then company and location in normal
@@ -243,6 +271,10 @@ export const exportToPDF = async (resumeData: ResumeData, filename: string = 're
       currentY += sectionSpacing;
 
       resumeData.projects.forEach((proj) => {
+        if (!proj.title?.trim()) {
+          return; // Skip incomplete project entries
+        }
+
         checkPageBreak(30);
         
         // Project title with GitHub icon if link exists

@@ -26,11 +26,28 @@ interface CoverLetterPreviewProps {
 }
 
 export const CoverLetterPreview: React.FC<CoverLetterPreviewProps> = ({ 
-  resumeData, 
   content,
   header,
   footer
 }) => {
+  // Validate required data
+  if (!header?.applicantName?.trim()) {
+    return (
+      <div style={{ 
+        width: '210mm',
+        minHeight: '297mm',
+        padding: '20mm',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '14pt',
+        color: '#666'
+      }}>
+        <p>Please fill in the header information to see the preview.</p>
+      </div>
+    );
+  }
+
   return (
     <div 
       id="cover-letter-preview" 

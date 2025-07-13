@@ -37,10 +37,14 @@ const AI_OPTIMIZATION_PROMPT = `{
 export const optimizeResumeWithAI = async (resumeData: ResumeData, jobDescription: string): Promise<ResumeData> => {
   try {
     // Check if OpenAI API key is available
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY?.trim();
     
-    if (!apiKey) {
-      throw new Error('OpenAI API key not found');
+    if (!apiKey || apiKey === '') {
+      throw new Error('OpenAI API key not found. Please add VITE_OPENAI_API_KEY to your environment variables.');
+    }
+
+    if (!jobDescription?.trim()) {
+      throw new Error('Job description is required for optimization.');
     }
     
     const prompt = AI_OPTIMIZATION_PROMPT
@@ -64,8 +68,13 @@ export const optimizeResumeWithAI = async (resumeData: ResumeData, jobDescriptio
 
 // OpenAI API integration
 const callOpenAI = async (prompt: string, apiKey: string) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+
+  try {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
+    signal: controller.signal,
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
@@ -87,9 +96,17 @@ const callOpenAI = async (prompt: string, apiKey: string) => {
     }),
   });
 
+  clearTimeout(timeoutId);
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+    let errorMessage = `OpenAI API error: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      errorMessage += ` - ${errorData.error?.message || 'Unknown error'}`;
+    } catch {
+      errorMessage += ' - Unable to parse error response';
+    }
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
@@ -111,6 +128,13 @@ const callOpenAI = async (prompt: string, apiKey: string) => {
     return optimizedData;
   } catch (parseError) {
     console.error('Failed to parse AI response:', content);
-    throw new Error('Invalid JSON response from AI');
+    throw new Error('Invalid JSON response from AI: ' + parseError);
+  }
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.');
+    }
+    throw error;
   }
 };

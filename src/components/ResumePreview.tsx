@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Linkedin, Globe, ExternalLink } from 'lucide-react';
+import { Github, Linkedin, Globe } from 'lucide-react';
 import { ResumeData } from '../types/Resume';
 
 interface ResumePreviewProps {
@@ -7,6 +7,24 @@ interface ResumePreviewProps {
 }
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
+  // Validate resume data
+  if (!resumeData || !resumeData.personalInfo) {
+    return (
+      <div style={{ 
+        width: '210mm',
+        minHeight: '297mm',
+        padding: '20mm',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '14pt',
+        color: '#666'
+      }}>
+        <p>Please fill in your personal information to see the preview.</p>
+      </div>
+    );
+  }
+
   const { personalInfo, education, experience, projects, skills, achievements } = resumeData;
 
   return (

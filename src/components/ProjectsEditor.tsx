@@ -157,6 +157,8 @@ export const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
                   className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={2}
                   placeholder="Describe your project features and achievements..."
+                  maxLength={200}
+                  // maxLength={300}
                 />
                 {proj.description.length > 1 && (
                   <button

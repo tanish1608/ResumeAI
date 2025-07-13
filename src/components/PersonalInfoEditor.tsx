@@ -31,6 +31,8 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
             value={personalInfo.fullName}
             onChange={(e) => handleChange('fullName', e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+            maxLength={100}
           />
         </div>
         
@@ -43,6 +45,8 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
             value={personalInfo.email}
             onChange={(e) => handleChange('email', e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+            maxLength={100}
           />
         </div>
         
@@ -55,6 +59,7 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
             value={personalInfo.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            maxLength={20}
           />
         </div>
         
@@ -107,6 +112,7 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="yourwebsite.com"
           />
+          maxLength={200}
         </div>
       </div>
     </div>

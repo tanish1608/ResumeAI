@@ -30,7 +30,7 @@ export const importResumeData = (file: File): Promise<ResumeData> => {
         const content = e.target?.result as string;
         const resumeData = JSON.parse(content) as ResumeData;
         resolve(resumeData);
-      } catch (error) {
+      } catch {
         reject(new Error('Invalid JSON file'));
       }
     };

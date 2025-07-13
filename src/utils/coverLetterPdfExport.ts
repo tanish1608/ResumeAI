@@ -1,5 +1,4 @@
 import jsPDF from 'jspdf';
-import { ResumeData } from '../types/Resume';
 
 interface CoverLetterHeader {
   applicantName: string;
@@ -19,13 +18,25 @@ interface CoverLetterFooter {
 }
 
 export const exportCoverLetterToPDF = async (
-  resumeData: ResumeData, 
   content: string,
   header: CoverLetterHeader,
   footer: CoverLetterFooter,
   filename: string = 'cover-letter.pdf'
 ) => {
   try {
+    // Validate input data
+    if (!header?.applicantName?.trim()) {
+      throw new Error('Applicant name is required for cover letter export');
+    }
+
+    if (!content?.trim()) {
+      throw new Error('Cover letter content is required for export');
+    }
+
+    if (!filename || filename.trim() === '') {
+      filename = 'cover-letter.pdf';
+    }
+
     // Create PDF with A4 dimensions
     const pdf = new jsPDF({
       orientation: 'portrait',
@@ -40,8 +51,8 @@ export const exportCoverLetterToPDF = async (
     const contentWidth = pageWidth - (margin * 2);
     
     let currentY = margin;
-    const lineHeight = 2;
-    const paragraphSpacing = 2;
+    const lineHeight = 5;
+    const paragraphSpacing = 6;
 
     // Helper functions
     const addText = (text: string, x: number, y: number, fontSize: number = 11, style: string = 'normal', align: 'left' | 'center' | 'right' = 'left') => {
@@ -55,63 +66,94 @@ export const exportCoverLetterToPDF = async (
       return pdf.splitTextToSize(text, maxWidth);
     };
 
-    // Header
+    const checkPageBreak = (neededSpace: number) => {
+      if (currentY + neededSpace > pageHeight - margin) {
+        pdf.addPage();
+        currentY = margin;
+        return true;
+      }
+      return false;
+    };
+
+    // Header Section
     addText(header.applicantName, margin, currentY, 14, 'bold');
     currentY += lineHeight + 2;
     
-    addText(`${header.degree},`, margin, currentY, 11, 'normal');
+    addText(header.degree, margin, currentY, 11, 'normal');
     currentY += lineHeight;
     
     addText(header.university, margin, currentY, 11, 'normal');
     currentY += lineHeight;
     
-    addText(header.email, margin, currentY, 11, 'normal');
-    currentY += paragraphSpacing + 8;
+    if (header.email?.trim()) {
+      addText(header.email, margin, currentY, 11, 'normal');
+    }
+    currentY += paragraphSpacing + 4;
 
     // Date
-    addText(header.date, margin, currentY, 11, 'normal');
-    currentY += paragraphSpacing + 8;
+    if (header.date?.trim()) {
+      addText(header.date, margin, currentY, 11, 'normal');
+    }
+    currentY += paragraphSpacing + 4;
 
     // Recipient
-    addText(header.recipientCompany, margin, currentY, 11, 'normal');
+    if (header.recipientCompany?.trim()) {
+      addText(header.recipientCompany, margin, currentY, 11, 'normal');
+    }
     currentY += lineHeight;
     
-    addText(header.recipientLocation, margin, currentY, 11, 'normal');
-    currentY += paragraphSpacing + 8;
+    if (header.recipientLocation?.trim()) {
+      addText(header.recipientLocation, margin, currentY, 11, 'normal');
+    }
+    currentY += paragraphSpacing + 4;
 
     // Salutation
-    addText(header.salutation, margin, currentY, 11, 'normal');
-    currentY += paragraphSpacing + 8;
+    if (header.salutation?.trim()) {
+      addText(header.salutation, margin, currentY, 11, 'normal');
+    }
+    currentY += paragraphSpacing + 4;
 
     // Body Content
-    if (content) {
-      const contentLines = wrapText(content, contentWidth, 11);
-      contentLines.forEach((line: string) => {
-        if (currentY > pageHeight - margin - 60) { // Leave space for footer
-          pdf.addPage();
-          currentY = margin;
+    if (content && content.trim()) {
+      // Split content into paragraphs
+      const paragraphs = content.split('\n\n').filter(p => p.trim());
+      
+      paragraphs.forEach((paragraph, index) => {
+        checkPageBreak(20); // Check if we need a new page
+        
+        const paragraphLines = wrapText(paragraph.trim(), contentWidth, 11);
+        
+        paragraphLines.forEach((line: string) => {
+          checkPageBreak(lineHeight + 2);
+          addText(line, margin, currentY, 11, 'normal');
+          currentY += lineHeight;
+        });
+        
+        // Add spacing between paragraphs (except for the last one)
+        if (index < paragraphs.length - 1) {
+          currentY += paragraphSpacing;
         }
-        addText(line, margin, currentY, 11, 'normal');
-        currentY += lineHeight;
       });
     }
 
     // Ensure we have space for footer
-    if (currentY > pageHeight - margin - 40) {
-      pdf.addPage();
-      currentY = margin;
-    } else {
-      currentY += paragraphSpacing + 8;
-    }
+    checkPageBreak(40);
+    currentY += paragraphSpacing + 4;
 
-    // Footer
-    addText(footer.closing, margin, currentY, 11, 'normal');
-    currentY += paragraphSpacing + 8;
+    // Footer Section
+    if (footer.closing?.trim()) {
+      addText(footer.closing, margin, currentY, 11, 'normal');
+    }
+    currentY += paragraphSpacing + 4;
     
-    addText(footer.signOff, margin, currentY, 11, 'normal');
-    currentY += paragraphSpacing + 8;
+    if (footer.signOff?.trim()) {
+      addText(footer.signOff, margin, currentY, 11, 'normal');
+    }
+    currentY += paragraphSpacing + 4;
     
-    addText(footer.signature, margin, currentY, 11, 'bold');
+    if (footer.signature?.trim()) {
+      addText(footer.signature, margin, currentY, 11, 'bold');
+    }
 
     // Save the PDF
     pdf.save(filename);

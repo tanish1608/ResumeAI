@@ -51,3 +51,65 @@ export interface ResumeData {
   skills: Skill[];
   achievements?: string[];
 }
+
+// Validation schemas
+export const validatePersonalInfo = (info: PersonalInfo): string[] => {
+  const errors: string[] = [];
+  
+  if (!info.fullName?.trim()) {
+    errors.push('Full name is required');
+  }
+  
+  if (!info.email?.trim()) {
+    errors.push('Email is required');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
+    errors.push('Please enter a valid email address');
+  }
+  
+  if (!info.phone?.trim()) {
+    errors.push('Phone number is required');
+  }
+  
+  if (!info.address?.trim()) {
+    errors.push('Address is required');
+  }
+  
+  return errors;
+};
+
+export const validateResumeData = (data: ResumeData): string[] => {
+  const errors: string[] = [];
+  
+  // Validate personal info
+  errors.push(...validatePersonalInfo(data.personalInfo));
+  
+  // Validate education
+  if (!data.education || data.education.length === 0) {
+    errors.push('At least one education entry is required');
+  } else {
+    data.education.forEach((edu, index) => {
+      if (!edu.degree?.trim()) {
+        errors.push(`Education ${index + 1}: Degree is required`);
+      }
+      if (!edu.school?.trim()) {
+        errors.push(`Education ${index + 1}: School is required`);
+      }
+    });
+  }
+  
+  // Validate skills
+  if (!data.skills || data.skills.length === 0) {
+    errors.push('At least one skill category is required');
+  } else {
+    data.skills.forEach((skill, index) => {
+      if (!skill.category?.trim()) {
+        errors.push(`Skill ${index + 1}: Category is required`);
+      }
+      if (!skill.items || skill.items.length === 0) {
+        errors.push(`Skill ${index + 1}: At least one skill item is required`);
+      }
+    });
+  }
+  
+  return errors;
+}

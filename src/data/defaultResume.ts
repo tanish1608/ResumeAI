@@ -36,6 +36,7 @@ export const defaultResumeData: ResumeData = {
       company: "Thunder Client",
       location: "Dublin, Ireland",
       startDate: "Apr 2023",
+      endDate: "",
       current: true,
       description: [
         "Created a Swagger conversion tool for automated API documentation generation, reducing conversion time from hours to a single click",
@@ -50,7 +51,7 @@ export const defaultResumeData: ResumeData = {
       location: "Pune, India",
       startDate: "January 2025",
       endDate: "March 2025",
-      current: true,
+      current: false,
       description: [
         "Led the creation of two internal tools that streamlined workflow efficiency and enhanced stakeholder visibility.",
         "Designed and implemented a real-time transaction monitoring and management system, improving anomaly detection and operational insights.",

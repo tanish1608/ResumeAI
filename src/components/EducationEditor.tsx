@@ -70,6 +70,7 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
                 onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g., Master of Science in Computer Science"
+                maxLength={200}
               />
             </div>
 
@@ -83,6 +84,7 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
                 onChange={(e) => updateEducation(edu.id, 'school', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="University Name"
+                maxLength={200}
               />
             </div>
 
@@ -96,6 +98,7 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
                 onChange={(e) => updateEducation(edu.id, 'location', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="City, State"
+                maxLength={100}
               />
             </div>
 

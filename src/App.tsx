@@ -69,7 +69,10 @@ function App() {
   };
 
   const handleExportConfirm = async () => {
-    if (!exportName.trim()) return;
+    if (!exportName?.trim()) {
+      alert('Please enter a valid filename');
+      return;
+    }
     
     setIsExporting(true);
     setShowExportDialog(false);
@@ -87,7 +90,7 @@ function App() {
     if (success) {
       console.log('Resume and data exported successfully!');
     } else {
-      alert('Error exporting files. Please try again.');
+      alert('Error exporting files. Please check your data and try again.');
     }
     setIsExporting(false);
   };
@@ -103,7 +106,10 @@ function App() {
   };
 
   const handleAIOptimizeConfirm = async () => {
-    if (!jobDescription.trim()) return;
+    if (!jobDescription?.trim()) {
+      alert('Please enter a job description');
+      return;
+    }
     
     setIsOptimizing(true);
     setShowAIDialog(false);
@@ -135,7 +141,8 @@ function App() {
         setOptimizationProgress([]);
       }, 2000);
     } catch (error) {
-      setOptimizationProgress(['❌ Error optimizing resume. Please check your API key and try again.']);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setOptimizationProgress([`❌ Error: ${errorMessage}`]);
       setTimeout(() => {
         setOptimizationProgress([]);
       }, 3000);
@@ -169,7 +176,10 @@ function App() {
   };
 
   const handleCoverLetterGenerate = async () => {
-    if (!coverLetterJobDescription.trim() && !coverLetterRequirements.trim()) return;
+    if (!coverLetterJobDescription?.trim() && !coverLetterRequirements?.trim()) {
+      alert('Please enter either a job description or requirements');
+      return;
+    }
     
     setIsGeneratingCoverLetter(true);
     setShowCoverLetterDialog(false);
@@ -183,7 +193,8 @@ function App() {
       );
       setCoverLetterContent(generatedContent);
     } catch (error) {
-      alert('Error generating cover letter. Please check your API key and try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error generating cover letter: ${errorMessage}`);
       console.error('Cover letter generation error:', error);
     }
     
@@ -241,7 +252,7 @@ function App() {
       const importedData = await importResumeData(file);
       setResumeData(importedData);
       alert('Resume data loaded successfully!');
-    } catch (error) {
+    } catch {
       alert('Error loading resume data. Please check the file format.');
     }
     
@@ -342,7 +353,7 @@ function App() {
 
               {/* Export PDF */}
               <button
-                onClick={handleGenerateCoverLetter}
+                onClick={handleAIOptimizeClick}
                 disabled={isOptimizing}
                 className="flex items-center space-x-2 px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors disabled:opacity-50"
               >

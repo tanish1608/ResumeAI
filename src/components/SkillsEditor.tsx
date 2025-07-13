@@ -73,6 +73,7 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
               onChange={(e) => updateSkillCategory(index, e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Programming Languages"
+              maxLength={100}
             />
           </div>
 
@@ -86,6 +87,7 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               rows={2}
               placeholder="Python, JavaScript, Java, C++"
+              maxLength={500}
             />
           </div>
         </div>

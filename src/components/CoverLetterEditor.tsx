@@ -39,14 +39,12 @@ interface CoverLetterEditorProps {
 const CoverLetterEditor: React.FC<CoverLetterEditorProps> = ({
   resumeData,
   coverLetterContent,
-  coverLetterRequirements,
   coverLetterHeader,
   coverLetterFooter,
   onContentChange,
   onRequirementsChange,
   onHeaderChange,
   onFooterChange,
-  onGenerateCoverLetter,
   onBackToHome,
   isGenerating
 }) => {
@@ -61,7 +59,6 @@ const CoverLetterEditor: React.FC<CoverLetterEditorProps> = ({
     setIsExporting(true);
     try {
       await exportCoverLetterToPDF(
-        resumeData, 
         coverLetterContent, 
         coverLetterHeader,
         coverLetterFooter,
@@ -95,7 +92,10 @@ const CoverLetterEditor: React.FC<CoverLetterEditorProps> = ({
   };
 
   const handleGenerateConfirm = async () => {
-    if (!jobDescription.trim() && !requirements.trim()) return;
+    if (!jobDescription?.trim() && !requirements?.trim()) {
+      alert('Please enter either a job description or requirements');
+      return;
+    }
     
     setShowGenerateDialog(false);
     
@@ -109,7 +109,8 @@ const CoverLetterEditor: React.FC<CoverLetterEditorProps> = ({
       onContentChange(generatedContent);
       onRequirementsChange(requirements);
     } catch (error) {
-      alert('Error generating cover letter. Please check your API key and try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error generating cover letter: ${errorMessage}`);
       console.error('Cover letter generation error:', error);
     }
   };
