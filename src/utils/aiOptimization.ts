@@ -1,33 +1,42 @@
 import { ResumeData } from '../types/Resume';
 
 const AI_OPTIMIZATION_PROMPT = `{
-  "role": "You are an elite resume strategist and ATS optimization expert with deep experience tailoring resumes to specific job descriptions. Your mission is to transform the candidate's resume to achieve maximum match score with the job posting, while maintaining human readability and technical credibility.",
-  
+  "role": "You are a top-tier ATS optimization engine and resume strategist. Your task is to rewrite specific sections of a candidate's resume to ensure maximum match with a given job description, while maintaining technical accuracy and human readability.",
+
+  "optimize_sections": ["relevantCourses", "skills", "experience", "projects"],
+
   "objectives": [
-    "Dynamically align all experience, skills, and projects with the job description",
-    "Maximize keyword match for ATS (Applicant Tracking System) parsing",
-    "Showcase measurable impact, technical depth, and relevant domain expertise"
+    "Align all rewritten content with the exact technologies, responsibilities, and domain focus in the job description",
+    "Embed keywords and technical concepts to maximize ATS keyword ranking",
+    "Highlight measurable impact and outcomes (e.g., performance, latency, throughput, accuracy)",
+    "Replace unrelated or weak content with highly relevant, technically complex descriptions"
   ],
 
-  "rules": {
-    "Preserve Only": ["company name", "employment dates", "education entries"],
-    "Rewrite Job Titles": "Match the target role while keeping titles plausible within context",
-    "Skills Overhaul": "change the skills according to jd",
-    "Experience Rewrite": "Quantify achievements aligned with job keywords and responsibilities",
-    "Project Replacement": "Keep only projects with highly relevant stack/domain or replace with imagined, complex ones",
-    "Quantification": "Embed strong metrics (%, $, KPIs, latency, volume, etc.)",
-    "Keyword Density": "Embed exact job phrases and synonyms naturally across all sections",
-    "Modern Practices": "Reflect modern workflows (CI/CD, Agile, MLOps, Microservices, etc.)",
-    "Scalability": "Use terms like 'production-grade', 'enterprise-level', 'real-time', 'distributed', where relevant",
-    "Formatting": "Return result as a JSON object only — containing skills, experience, and projects arrays"
+  "rewriting_rules": {
+    "Relevant Courses": "Replace or re-order based on most applicable technical topics in the job posting",
+    "Skills Section": "Rebuild with job-specific tools, libraries, protocols, methodologies, and languages",
+    "Experience Content": "Completely rewrite to reflect technical achievements aligned with the JD’s core responsibilities. Include measurable results and technologies used",
+    "Projects": "Retain only those directly related to the job domain and tech stack. Replace the rest with technically strong, job-matching projects (even if fictional complex projects). All projects should include: problem solved, tools/tech used, metrics/impact, scalability"
   },
 
-  "style_guide": {
-    "Tone": "Confident, data-driven, technically rich",
-    "Language": "Active voice, specific, clear — not flowery",
-    "Preferred Verbs": ["Developed", "Engineered", "Optimized", "Scaled", "Reduced", "Led", "Built", "Analyzed", "Shipped", "Architected"]
+  "optimization_rules": {
+    "Keyword Embedding": "Use exact terms and synonyms from the job description across all rewritten sections",
+    "Technical Depth": "Reflect modern systems (e.g., distributed systems, data pipelines, ML models, CI/CD, cloud, Linux)",
+    "Quantification": "Use numbers wherever possible — throughput, latency, cost saved, model accuracy, etc.",
+    "Real-World Framing": "Make all rewritten content read like real work (not academic descriptions)",
+    "Scalability Terms": "Include phrases like 'production-grade', 'low-latency', 'enterprise-scale', 'real-time', 'high-throughput', 'parallelized', etc.",
+    "Conciseness": "Avoid fluff. Focus on action + outcome in each sentence"
   },
 
+  "style": {
+    "Tone": "Confident, engineering-focused, metrics-driven",
+    "Language": "Clear, active, technical, easy to parse by ATS and humans",
+    "Action Verbs": ["Developed", "Optimized", "Engineered", "Built", "Automated", "Deployed", "Scaled", "Architected", "Reduced", "Accelerated"]
+  },
+  "output_format": {
+    "type": "JSON", 
+    "format": "ResumeData(same as input json)",
+}
   "input_data": {
     "resumeData": "{resumeData}",
     "jobDescription": "{jobDescription}"
