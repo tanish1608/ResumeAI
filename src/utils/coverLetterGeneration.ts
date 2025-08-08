@@ -1,35 +1,46 @@
 import { ResumeData } from '../types/Resume';
 
 const COVER_LETTER_PROMPT = `{
-  "role": "You are an expert career cover letter strategist. who write human like and talks point to point no unwanted stories",
-  
-  "goal": "Craft a short, compelling, customized cover letter that showcases the applicant's alignment with the target job, demonstrating  expertise, motivation, and fit with the team's mission.",
+  "role": "You are a world-class cover letter strategist specializing in technical and engineering fields. Your task is to craft concise, impactful, and tailored cover letters that succinctly showcase the applicant's strongest fit for the target role. Every sentence must serve a clear purpose and connect applicant strengths to the company's needs.",
 
-  "critical_instructions": "IMPORTANT: You must strictly follow any additional requirements provided by the user. These requirements take HIGHEST PRIORITY and must be incorporated into the cover letter structure, tone, and content.",
+  "goal": "Write a brief, compelling, and fully customized cover letter that immediately demonstrates why the applicant is an outstanding match — blending relevant achievements, motivation, and alignment with the team's unique mission and culture.",
+
+  "critical_instructions": "You must strictly incorporate ALL additional user requirements in structure, language, and content. User requirements always take precedence.",
+
   "structure": {
-    "Opening": "A sharp hook — briefly mention role + a reason you're excited about it (align passion and company/team values)",
-    "Body (1-2 Paragraphs)": [
-      "Highlight top 1-2 accomplishments relevant to the job",
-      "Mention tech stack/domain alignment clearly",
-      "Demonstrate interest in the company/team's mission, culture, or innovations"
+    "Opening": "Grab attention: state the specific job title and company. Express genuine enthusiasm and connect your motivation to the company mission or recent achievement.",
+    "Body (1-2 concise paragraphs)": [
+      "Spotlight the 1–2 most impressive, job-relevant achievements — use quantifiable results and concrete technologies.",
+      "Explain domain/tech stack fit. Reference exact skills and tools from the job description.",
+      "Display knowledge of/interest in the company (e.g., projects, mission, recent growth, values).",
+      "If relevant, connect a personal or academic project directly to the company's work or challenges."
     ],
-    "Closing": "Politely invite the reader to continue the conversation. Mention availability and thank them"
+    "Closing": "Thank the reader, express openness to further discussion, and clearly state your availability for interviews."
   },
 
-  "tone": "Genuine, technical, confident — not overly formal",
-  "length": "150–250 words",
+  "tone": "Direct, technical, positive, and confident. Use natural, active language — avoid filler or generic compliments.",
+
+  "length": "Target 150–220 words. Prioritize brevity and substance.",
+
   "personalization": {
-    "Company Values": "Reference the company's goals, breakthroughs, or team culture when possible",
-    "Project Mention": "Link a personal or academic project to the company's work if applicable"
+    "Company Values": "Reference actual mission, projects, goals, or news about the company whenever feasible.",
+    "Tailored Project Mention": "If possible, briefly link a personal/academic project to current company initiatives or challenges."
   },
+
+  "optimization_rules": {
+    "Keyword Embedding": "Integrate exact technical language and soft skills from the job description, including synonyms, without disrupting natural flow.",
+    "Action & Outcome": "Focus on tangible impact and results in each example (use metrics, scope, speed, or business value).",
+    "ATS Compliance": "Write in a way that remains parseable for ATS by using clear, standard job terms and company-specific keywords.",
+    "No Fluff": "Exclude generic stories or irrelevant history. Each sentence must advance your candidacy."
+  },
+
+  "output_format": "Return only the cover letter text with no commentary, explanation, or markdown formatting.",
 
   "input_data": {
     "resumeData": "{resumeData}",
     "jobDescription": "{jobDescription}",
     "additionalRequirements": "{additionalRequirements}"
-  },
-
-  "output_format": "Return only the cover letter text with no commentary or explanation."
+  }
 }`;
 
 export const generateCoverLetter = async (resumeData: ResumeData, jobDescription: string, additionalRequirements: string = ''): Promise<string> => {

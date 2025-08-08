@@ -45,6 +45,7 @@ export interface Skill {
 
 export interface ResumeData {
   personalInfo: PersonalInfo;
+  professionalSummary?: string;
   education: Education[];
   experience: Experience[];
   projects: Project[];
@@ -55,37 +56,44 @@ export interface ResumeData {
 // Validation schemas
 export const validatePersonalInfo = (info: PersonalInfo): string[] => {
   const errors: string[] = [];
-  
+
   if (!info.fullName?.trim()) {
-    errors.push('Full name is required');
+    errors.push("Full name is required");
   }
-  
+
   if (!info.email?.trim()) {
-    errors.push('Email is required');
+    errors.push("Email is required");
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
-    errors.push('Please enter a valid email address');
+    errors.push("Please enter a valid email address");
   }
-  
+
   if (!info.phone?.trim()) {
-    errors.push('Phone number is required');
+    errors.push("Phone number is required");
   }
-  
+
   if (!info.address?.trim()) {
-    errors.push('Address is required');
+    errors.push("Address is required");
   }
-  
+
   return errors;
 };
 
 export const validateResumeData = (data: ResumeData): string[] => {
   const errors: string[] = [];
-  
+
   // Validate personal info
   errors.push(...validatePersonalInfo(data.personalInfo));
-  
+
+  // Validate professional summary (optional but recommended)
+  if (data.professionalSummary && data.professionalSummary.trim().length < 50) {
+    errors.push(
+      "Professional summary should be at least 50 characters long for better impact"
+    );
+  }
+
   // Validate education
   if (!data.education || data.education.length === 0) {
-    errors.push('At least one education entry is required');
+    errors.push("At least one education entry is required");
   } else {
     data.education.forEach((edu, index) => {
       if (!edu.degree?.trim()) {
@@ -96,10 +104,10 @@ export const validateResumeData = (data: ResumeData): string[] => {
       }
     });
   }
-  
+
   // Validate skills
   if (!data.skills || data.skills.length === 0) {
-    errors.push('At least one skill category is required');
+    errors.push("At least one skill category is required");
   } else {
     data.skills.forEach((skill, index) => {
       if (!skill.category?.trim()) {
@@ -110,6 +118,6 @@ export const validateResumeData = (data: ResumeData): string[] => {
       }
     });
   }
-  
+
   return errors;
-}
+};

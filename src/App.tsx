@@ -4,6 +4,7 @@ import { ResumeData } from './types/Resume';
 import { defaultResumeData } from './data/defaultResume';
 import { HomePage } from './components/HomePage';
 import { PersonalInfoEditor } from './components/PersonalInfoEditor';
+import { ProfessionalSummaryEditor } from './components/ProfessionalSummaryEditor';
 import { EducationEditor } from './components/EducationEditor';
 import { ExperienceEditor } from './components/ExperienceEditor';
 import { ProjectsEditor } from './components/ProjectsEditor';
@@ -17,7 +18,7 @@ import { optimizeResumeWithAI } from './utils/aiOptimization';
 const CoverLetterEditor = lazy(() => import('./components/CoverLetterEditor'));
 
 type Page = 'home' | 'resume' | 'cover-letter';
-type Section = 'personal' | 'education' | 'experience' | 'projects' | 'skills' | 'achievements';
+type Section = 'personal' | 'summary' | 'education' | 'experience' | 'projects' | 'skills' | 'achievements';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -31,7 +32,6 @@ function App() {
   const [jobDescription, setJobDescription] = useState('');
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizationProgress, setOptimizationProgress] = useState<string[]>([]);
-  
   // Cover Letter State
   const [coverLetterJobDescription, setCoverLetterJobDescription] = useState('');
   const [coverLetterContent, setCoverLetterContent] = useState('');
@@ -56,6 +56,7 @@ function App() {
 
   const sections: { key: Section; label: string; icon: React.ReactNode }[] = [
     { key: 'personal', label: 'Personal Info', icon: <FileText className="w-4 h-4" /> },
+    { key: 'summary', label: 'Summary', icon: <FileText className="w-4 h-4" /> },
     { key: 'education', label: 'Education', icon: <FileText className="w-4 h-4" /> },
     { key: 'experience', label: 'Experience', icon: <FileText className="w-4 h-4" /> },
     { key: 'projects', label: 'Projects', icon: <FileText className="w-4 h-4" /> },
@@ -73,20 +74,14 @@ function App() {
       alert('Please enter a valid filename');
       return;
     }
-    
     setIsExporting(true);
     setShowExportDialog(false);
-    
     const fileName = exportName.trim();
-    
     // Export PDF
     const pdfSuccess = await exportToPDF(resumeData, `${fileName}.pdf`);
-    
     // Export JSON
     const jsonSuccess = exportResumeData(resumeData, `${fileName}.json`);
-    
     const success = pdfSuccess && jsonSuccess;
-    
     if (success) {
       console.log('Resume and data exported successfully!');
     } else {
@@ -110,32 +105,23 @@ function App() {
       alert('Please enter a job description');
       return;
     }
-    
     setIsOptimizing(true);
     setShowAIDialog(false);
     setOptimizationProgress([]);
-    
     try {
       // Add progress updates
       setOptimizationProgress(['🤖 Analyzing job description...']);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setOptimizationProgress(prev => [...prev, '📝 Optimizing experience descriptions...']);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setOptimizationProgress(prev => [...prev, '🛠️ Enhancing technical skills...']);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setOptimizationProgress(prev => [...prev, '🚀 Updating project descriptions...']);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setOptimizationProgress(prev => [...prev, '✨ Finalizing optimization...']);
-      
       const optimizedData = await optimizeResumeWithAI(resumeData, jobDescription);
       setResumeData(optimizedData);
-      
       setOptimizationProgress(prev => [...prev, '✅ Resume optimization completed successfully!']);
-      
       // Auto-hide after 2 seconds
       setTimeout(() => {
         setOptimizationProgress([]);
@@ -148,7 +134,7 @@ function App() {
       }, 3000);
       console.error('AI optimization error:', error);
     }
-    
+
     setIsOptimizing(false);
   };
 
@@ -180,15 +166,15 @@ function App() {
       alert('Please enter either a job description or requirements');
       return;
     }
-    
+
     setIsGeneratingCoverLetter(true);
     setShowCoverLetterDialog(false);
-    
+
     try {
       const { generateCoverLetter } = await import('./utils/coverLetterGeneration');
       const generatedContent = await generateCoverLetter(
-        resumeData, 
-        coverLetterJobDescription, 
+        resumeData,
+        coverLetterJobDescription,
         coverLetterRequirements
       );
       setCoverLetterContent(generatedContent);
@@ -197,7 +183,7 @@ function App() {
       alert(`Error generating cover letter: ${errorMessage}`);
       console.error('Cover letter generation error:', error);
     }
-    
+
     setIsGeneratingCoverLetter(false);
   };
 
@@ -210,7 +196,7 @@ function App() {
   // Show home page
   if (currentPage === 'home') {
     return (
-      <HomePage 
+      <HomePage
         onNavigateToResume={handleNavigateToResume}
         onNavigateToCoverLetter={handleNavigateToCoverLetter}
       />
@@ -255,7 +241,7 @@ function App() {
     } catch {
       alert('Error loading resume data. Please check the file format.');
     }
-    
+
     // Reset the input
     event.target.value = '';
   };
@@ -267,6 +253,13 @@ function App() {
           <PersonalInfoEditor
             personalInfo={resumeData.personalInfo}
             onChange={(personalInfo) => setResumeData({ ...resumeData, personalInfo })}
+          />
+        );
+      case 'summary':
+        return (
+          <ProfessionalSummaryEditor
+            summary={resumeData.professionalSummary || ''}
+            onChange={(professionalSummary) => setResumeData({ ...resumeData, professionalSummary })}
           />
         );
       case 'education':
@@ -325,7 +318,7 @@ function App() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Resume Editor</h1>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {/* Mobile Preview Toggle */}
               <button
@@ -337,9 +330,8 @@ function App() {
               </button>
 
               {/* Import Data */}
-              <label className={`flex items-center space-x-2 px-3 py-2 bg-green-500 text-white rounded-md transition-colors ${
-                isOptimizing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-600 cursor-pointer'
-              }`}>
+              <label className={`flex items-center space-x-2 px-3 py-2 bg-green-500 text-white rounded-md transition-colors ${isOptimizing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-600 cursor-pointer'
+                }`}>
                 <Upload className="w-4 h-4" />
                 <span>Import</span>
                 <input
@@ -385,11 +377,10 @@ function App() {
                   <button
                     key={section.key}
                     onClick={() => setActiveSection(section.key)}
-                    className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeSection === section.key
+                    className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeSection === section.key
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     {section.icon}
                     <span className="hidden sm:inline">{section.label}</span>
@@ -411,7 +402,7 @@ function App() {
                 <Eye className="w-5 h-5 mr-2" />
                 Live Preview
               </h2>
-              <div className="bg-white rounded-lg shadow-lg overflow-auto" style={{ 
+              <div className="bg-white rounded-lg shadow-lg overflow-auto" style={{
                 transform: 'scale(0.6)',
                 transformOrigin: 'top left',
                 width: '166.67%'

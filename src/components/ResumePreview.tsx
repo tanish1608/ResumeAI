@@ -10,7 +10,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   // Validate resume data
   if (!resumeData || !resumeData.personalInfo) {
     return (
-      <div style={{ 
+      <div style={{
         width: '210mm',
         minHeight: '297mm',
         padding: '20mm',
@@ -25,11 +25,11 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
     );
   }
 
-  const { personalInfo, education, experience, projects, skills, achievements } = resumeData;
+  const { personalInfo, professionalSummary, education, experience, projects, skills, achievements } = resumeData;
 
   return (
-    <div 
-      id="resume-preview" 
+    <div
+      id="resume-preview"
       className="bg-white mx-auto shadow-lg"
       style={{
         width: '210mm',
@@ -44,12 +44,12 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
     >
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '16pt' }}>
-        <h1 
-          style={{ 
-            fontSize: '18pt', 
-            lineHeight: '1.2', 
-            fontWeight: 'bold', 
-            margin: '0 0 4pt 0' 
+        <h1
+          style={{
+            fontSize: '18pt',
+            lineHeight: '1.2',
+            fontWeight: 'bold',
+            margin: '0 0 4pt 0'
           }}
         >
           {personalInfo.fullName}
@@ -73,7 +73,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               {personalInfo.linkedin && (
                 <>
                   <span> | </span>
-                  <a 
+                  <a
                     href={personalInfo.linkedin.startsWith('http') ? personalInfo.linkedin : `https://${personalInfo.linkedin}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -87,7 +87,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               {personalInfo.github && (
                 <>
                   <span> | </span>
-                  <a 
+                  <a
                     href={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -101,7 +101,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               {personalInfo.website && (
                 <>
                   <span> | </span>
-                  <a 
+                  <a
                     href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -117,16 +117,38 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         </div>
       </div>
 
+      {/* Professional Summary */}
+      {professionalSummary && professionalSummary.trim() && (
+        <section style={{ marginBottom: '16pt' }}>
+          <h2
+            style={{
+              fontSize: '12pt',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5pt',
+              borderBottom: '1px solid black',
+              paddingBottom: '1pt',
+              margin: '0 0 8pt 0'
+            }}
+          >
+            PROFESSIONAL SUMMARY
+          </h2>
+          <p style={{ fontSize: '10pt', margin: '0', lineHeight: '1.5' }}>
+            {professionalSummary}
+          </p>
+        </section>
+      )}
+
       {/* Education */}
       {education.length > 0 && (
         <section style={{ marginBottom: '16pt' }}>
-          <h2 
-            style={{ 
-              fontSize: '12pt', 
-              fontWeight: 'bold', 
-              textTransform: 'uppercase', 
+          <h2
+            style={{
+              fontSize: '12pt',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
               letterSpacing: '0.5pt',
-              borderBottom: '1px solid black', 
+              borderBottom: '1px solid black',
               paddingBottom: '1pt',
               margin: '0 0 8pt 0'
             }}
@@ -160,13 +182,13 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       {/* Technical Skills */}
       {skills.length > 0 && (
         <section style={{ marginBottom: '16pt' }}>
-          <h2 
-            style={{ 
-              fontSize: '12pt', 
-              fontWeight: 'bold', 
-              textTransform: 'uppercase', 
+          <h2
+            style={{
+              fontSize: '12pt',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
               letterSpacing: '0.5pt',
-              borderBottom: '1px solid black', 
+              borderBottom: '1px solid black',
               paddingBottom: '1pt',
               margin: '0 0 8pt 0'
             }}
@@ -188,13 +210,13 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       {/* Professional Experience */}
       {experience.length > 0 && (
         <section style={{ marginBottom: '16pt' }}>
-          <h2 
-            style={{ 
-              fontSize: '12pt', 
-              fontWeight: 'bold', 
-              textTransform: 'uppercase', 
+          <h2
+            style={{
+              fontSize: '12pt',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
               letterSpacing: '0.5pt',
-              borderBottom: '1px solid black', 
+              borderBottom: '1px solid black',
               paddingBottom: '1pt',
               margin: '0 0 8pt 0'
             }}
@@ -213,9 +235,9 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
                     {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
                   </div>
                 </div>
-                <ul style={{ 
-                  fontSize: '10pt', 
-                  marginTop: '2pt', 
+                <ul style={{
+                  fontSize: '10pt',
+                  marginTop: '2pt',
                   marginBottom: '0',
                   paddingLeft: '16pt',
                   listStyleType: 'disc'
@@ -237,13 +259,13 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       {/* Academic Projects */}
       {projects.length > 0 && (
         <section style={{ marginBottom: '16pt' }}>
-          <h2 
-            style={{ 
-              fontSize: '12pt', 
-              fontWeight: 'bold', 
-              textTransform: 'uppercase', 
+          <h2
+            style={{
+              fontSize: '12pt',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
               letterSpacing: '0.5pt',
-              borderBottom: '1px solid black', 
+              borderBottom: '1px solid black',
               paddingBottom: '1pt',
               margin: '0 0 8pt 0'
             }}
@@ -259,7 +281,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
                       {proj.link ? (
                         <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                           <Github style={{ width: '11pt', height: '11pt', marginRight: '4pt' }} />
-                          <a 
+                          <a
                             href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -281,9 +303,9 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
                   </div>
                   <div style={{ clear: 'both' }}></div>
                 </div>
-                <ul style={{ 
-                  fontSize: '10pt', 
-                  marginTop: '4pt', 
+                <ul style={{
+                  fontSize: '10pt',
+                  marginTop: '4pt',
                   marginBottom: '0',
                   paddingLeft: '16pt',
                   listStyleType: 'disc'
@@ -305,13 +327,13 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       {/* Achievements */}
       {achievements && achievements.length > 0 && (
         <section style={{ marginBottom: '16pt' }}>
-          <h2 
-            style={{ 
-              fontSize: '12pt', 
-              fontWeight: 'bold', 
-              textTransform: 'uppercase', 
+          <h2
+            style={{
+              fontSize: '12pt',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
               letterSpacing: '0.5pt',
-              borderBottom: '1px solid black', 
+              borderBottom: '1px solid black',
               paddingBottom: '1pt',
               margin: '0 0 8pt 0'
             }}
@@ -319,8 +341,8 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             ACHIEVEMENTS
           </h2>
           <div>
-            <ul style={{ 
-              fontSize: '10pt', 
+            <ul style={{
+              fontSize: '10pt',
               marginTop: '0',
               marginBottom: '0',
               paddingLeft: '16pt',
